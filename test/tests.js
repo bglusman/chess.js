@@ -630,7 +630,12 @@ describe("Make Move", function() {
      legal: true,
      move: 'fxe3',
      next: 'rnbqkbnr/pppp2pp/8/4p3/8/2PPp3/PP3PPP/RNBQKBNR w KQkq - 0 2',
-     captured: 'p'}
+     captured: 'p'},
+    {
+     fen: 'rnbqkbnr/pppp1Bpp/5p2/4p3/4P3/8/PPPP1PPP/RNBQK1NR b KQkq - 5 3',
+     legal: false,
+     move: 'Be7'
+    }
   ];
 
   positions.forEach(function(position) {
@@ -647,6 +652,23 @@ describe("Make Move", function() {
       }
     });
 
+  });
+  var position = {
+     fen: 'rnbqkbnr/pppp1Bpp/5p2/4p3/4P3/8/PPPP1PPP/RNBQK1NR b KQkq - 5 3',
+     legal: true,
+     move: 'Be7',
+     next: 'rnbqk1nr/ppppbBpp/5p2/4p3/4P3/8/PPPP1PPP/RNBQK1NR w KQkq - 6 4'
+  }
+  chess = new Chess(position.fen, true);
+  it(position.fen + ' (' + position.move + ' ' + position.legal + ')', function() {
+    var result = chess.move(position.move);
+    if (position.legal) {
+      assert(result
+             && chess.fen() == position.next
+             && result.captured == position.captured);
+    } else {
+      assert(!result);
+    }
   });
 
 });

@@ -34,7 +34,7 @@
  * https://github.com/jhlywa/chess.js/blob/master/LICENSE
  */
 
-var Chess = function(fen) {
+var Chess = function(fen, allow_king_capture) {
 
   /* jshint indent: false */
 
@@ -55,6 +55,8 @@ var Chess = function(fen) {
   var DEFAULT_POSITION = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
   var POSSIBLE_RESULTS = ['1-0', '0-1', '1/2-1/2', '*'];
+
+  var ALLOW_KING_CAPTURE = false;
 
   var PAWN_OFFSETS = {
     b: [16, 32, 17, 15],
@@ -171,6 +173,12 @@ var Chess = function(fen) {
     load(DEFAULT_POSITION);
   } else {
     load(fen);
+  }
+
+  if (typeof allow_king_capture === 'undefined') {
+    ALLOW_KING_CAPTURE = false
+  } else {
+    ALLOW_KING_CAPTURE = true
   }
 
   function clear() {
@@ -611,7 +619,7 @@ var Chess = function(fen) {
     var legal_moves = [];
     for (var i = 0, len = moves.length; i < len; i++) {
       make_move(moves[i]);
-      if (!king_attacked(us)) {
+      if (!king_attacked(us) || ALLOW_KING_CAPTURE) {
         legal_moves.push(moves[i]);
       }
       undo_move();
@@ -1106,7 +1114,7 @@ var Chess = function(fen) {
 
     for (var i = 0, len = moves.length; i < len; i++) {
       make_move(moves[i]);
-      if (!king_attacked(color)) {
+      if (!king_attacked(color) || ALLOW_KING_CAPTURE) {
         if (depth - 1 > 0) {
           var child_nodes = perft(depth - 1);
           nodes += child_nodes;
